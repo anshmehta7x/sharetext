@@ -6,4 +6,9 @@ function hashPassword(password) {
   return { hash, salt };
 }
 
-module.exports = { hashPassword };
+function comparePassword(password, hash, salt) {
+  const newHash = bcrypt.hashSync(password, salt);
+  return hash === newHash;
+}
+
+module.exports = { hashPassword, comparePassword};

@@ -1,30 +1,30 @@
 import { useState } from "react";
 import axios from "axios";
+import {useNavigate} from 'react-router-dom';
 
 const serverUrl = "http://localhost:3000";
 
 function Login(){
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
     function handleLogin(){
-        console.log("OKOKO")
         axios.post(serverUrl + "/login",{
             username: username,
             password: password
         })
         .then(res=>{
+            console.log(res)
             if(res.status === 200){
-                console.log("VALID")
+                setError("");
+                localStorage.setItem("currentUserId", res.data);
+                navigate('/feed')
             }
-            else{
-                setError("Invalid Username Password Combination")
-            }
-        })
+        }) 
         .catch(err=>{
-            console.log(err.response)
-            setError("Unable too connect to server")
+            setError(err.response.data.err)
         })
     }
 

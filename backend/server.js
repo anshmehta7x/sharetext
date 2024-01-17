@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 app.use(bodyParser.json());
 app.use(cors());
 const User = require('./UserSchema.js');
-const { hashPassword } = require('./hashandsalt.js');
+const { hashPassword , comparePassword } = require('./hashandsalt.js');
 
 mongoose.connect('mongodb+srv://a7x:RRyvDYLyNrxhRyDQ@cluster0.g0xxhmx.mongodb.net/app_users?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
@@ -29,16 +29,22 @@ app.post('/newuser', async (req,res)=>{
 });
 
 app.post('/login', async (req,res)=>{
-    console.log(req.body)
     const {username,password} = req.body; // Destructuring
     try{
         const user = await User.findOne({username});
+        
         if(user){
-            console.log(user);
-            res.status(200).send(user._id);
+           
+            if(comparePassword(password,user.password.hash,user.password.salt)){
+                console.log(user._id);
+                res.status(200).send(user._id);
+            }
+            else{
+                res.status(401).json({err:"Incorrect password"});
+            }  
         }
         else{
-            res.status(400).json({err:"Incorrect username password combination"});
+            res.status(401).json({err:"Username not found"});
         }
     }
     catch(err){
