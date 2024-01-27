@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -9,7 +10,8 @@ app.use(cors());
 const User = require('./UserSchema.js');
 const { hashPassword , comparePassword } = require('./hashandsalt.js');
 
-mongoose.connect('mongodb+srv://a7x:RRyvDYLyNrxhRyDQ@cluster0.g0xxhmx.mongodb.net/app_users?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
@@ -52,6 +54,7 @@ app.post('/login', async (req,res)=>{
         res.status(400).json({err});
     }
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

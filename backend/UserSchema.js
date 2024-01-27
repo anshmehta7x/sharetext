@@ -1,3 +1,4 @@
+const { BSON } = require("mongodb");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -26,6 +27,9 @@ const userSchema = new Schema({
     creationDate:{
         type:Date,
         default:Date.now
+    },
+    profilePic:{
+        type:Buffer,
     }
 });
 
